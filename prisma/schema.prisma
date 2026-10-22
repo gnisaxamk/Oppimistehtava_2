@@ -11,3 +11,13 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+model Komponentti {
+  id Int @id @default(autoincrement())
+  kategoria String
+  merkki String
+  malli String
+  hinta Float
+  maara Int
+  paivitetty String
+}
