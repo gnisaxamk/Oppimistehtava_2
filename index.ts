@@ -1,14 +1,9 @@
-import express, { type Application, type Request, type Response } from 'express';
-import path from 'path';
+import express from 'express';
 
-const app: Application = express();
+const app: express.Application = express();
 
-const port: number = Number(process.env.PORT) || 3102;
+const portti: number = Number(process.env.PORT) || 3102;
 
-app.use(express.static(path.join(import.meta.dirname, "public")));
-
-
-
-app.listen(port, () => {
-    console.log(`Palvelin käynnistettiin osoitteeseen: http://localhost:${port}`);
+app.listen(portti, (): void => {
+    console.log(`Palvelin käynnistettiin osoitteeseen http://localhost:${portti}`);
 });
