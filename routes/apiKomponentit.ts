@@ -17,6 +17,36 @@ const tanaan = (): string => new Date().toLocaleDateString("fi-FI", { day: "2-di
 apiKomponentitRouter.get("/", async (_req: express.Request, res: express.Response) => {
     const komponentit = await prisma.komponentti.findMany();
     res.json(komponentit);
+
+// Lisätään uusi komponentti
+apiKomponentitRouter.post("/", async (req: express.Request, res: express.Response) => {
+
+    const body = req.body;
+
+    const kelvollinen = onTeksti(body?.kategoria)
+        && onTeksti(body?.merkki)
+        && onTeksti(body?.malli)
+        && onHinta(body?.hinta)
+        && onMaara(body?.maara);
+
+    if (!kelvollinen) {
+        throw new Virhe(400, "Virheellinen pyyntö");
+    }
+
+    const uusiKomponentti = await prisma.komponentti.create({
+        data: {
+            kategoria: body.kategoria,
+            merkki: body.merkki,
+            malli: body.malli,
+            hinta: body.hinta,
+            maara: body.maara,
+            paivitetty: tanaan(),
+        },
+    });
+
+    res.status(201).json(uusiKomponentti);
+});
+
 });
 
 export default apiKomponentitRouter;
