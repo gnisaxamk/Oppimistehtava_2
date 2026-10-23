@@ -45,6 +45,53 @@ apiKomponentitRouter.post("/", async (req: express.Request, res: express.Respons
     });
 
     res.status(201).json(uusiKomponentti);
+
+    // Muokataan komponentin määrää
+apiKomponentitRouter.put("/:id", async (req: express.Request, res: express.Response) => {
+
+    const id = Number(req.params.id);
+
+    const loytyi = Number.isInteger(id)
+        && (await prisma.komponentti.count({ where: { id } })) === 1;
+
+    if (!loytyi) {
+        throw new Virhe(404, "Komponenttia ei löytynyt annetulla id:llä");
+    }
+
+    if (!onMaara(req.body?.maara)) {
+        throw new Virhe(400, "Virheellinen pyynnön body");
+    }
+
+    const muokattuKomponentti = await prisma.komponentti.update({
+        where: { id },
+        data: {
+            maara: req.body.maara,
+            paivitetty: tanaan(),
+        },
+    });
+
+    res.json(muokattuKomponentti);
+});
+
+// Poistetaan komponentti ja palautetaan jäljellä olevat
+apiKomponentitRouter.delete("/:id", async (req: express.Request, res: express.Response) => {
+
+    const id = Number(req.params.id);
+
+    const loytyi = Number.isInteger(id)
+        && (await prisma.komponentti.count({ where: { id } })) === 1;
+
+    if (!loytyi) {
+        throw new Virhe(404, "Komponenttia ei löytynyt annetulla id:llä");
+    }
+
+    await prisma.komponentti.delete({ where: { id } });
+
+    const jaljella = await prisma.komponentti.findMany();
+
+    res.json(jaljella);
+});
+
 });
 
 });
