@@ -17,6 +17,7 @@ const tanaan = (): string => new Date().toLocaleDateString("fi-FI", { day: "2-di
 apiKomponentitRouter.get("/", async (_req: express.Request, res: express.Response) => {
     const komponentit = await prisma.komponentti.findMany();
     res.json(komponentit);
+});
 
 // Lisätään uusi komponentti
 apiKomponentitRouter.post("/", async (req: express.Request, res: express.Response) => {
@@ -45,8 +46,9 @@ apiKomponentitRouter.post("/", async (req: express.Request, res: express.Respons
     });
 
     res.status(201).json(uusiKomponentti);
+});
 
-    // Muokataan komponentin määrää
+// Muokataan komponentin määrää
 apiKomponentitRouter.put("/:id", async (req: express.Request, res: express.Response) => {
 
     const id = Number(req.params.id);
@@ -90,10 +92,6 @@ apiKomponentitRouter.delete("/:id", async (req: express.Request, res: express.Re
     const jaljella = await prisma.komponentti.findMany();
 
     res.json(jaljella);
-});
-
-});
-
 });
 
 export default apiKomponentitRouter;
